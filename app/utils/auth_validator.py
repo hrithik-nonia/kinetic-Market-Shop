@@ -27,12 +27,12 @@ class AuthValidator:
 
 
   # phone number validater
-  def phone_validater(self , value: str)-> str:
-    if not re.fullmatch(r"^[6-9]\d{9}$", value):
-        raise ValueError(
-            "Phone number must be a valid Indian mobile number."
-        )
-    return value
+  def phone_validater(self, value: str) -> str:
+        if not re.match(r"^[6-9]\d{9}$", value):  # Indian mobile: 10 digit, starts 6-9
+            raise ValueError("Invalid phone number")
+        if value == value[0] * 10:  # 9999999999 jaisa repeated digit
+            raise ValueError("Invalid phone number")
+        return value
 
 
 

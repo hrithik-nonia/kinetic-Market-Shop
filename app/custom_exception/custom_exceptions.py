@@ -32,3 +32,12 @@ class InvalidCredentialsException(AppException):
             message="Invalid email or password",
             status_code=status.HTTP_401_UNAUTHORIZED,
         )
+
+
+class UserNotVerifiedException(AppException):
+    """ if user try to login but they don't a verified persion we return this exception"""
+    def __init__(self):
+        super().__init__(
+            message="User not verified try to sign up first",
+            status_code=status.HTTP_401_UNAUTHORIZED,
+        )

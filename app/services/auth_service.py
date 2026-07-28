@@ -5,7 +5,7 @@
 # custom module imports 
 from app.repositories.user_repository import user_repository
 from app.schemas.user_schema import UserCreate, UserResponse, UserLogin
-from app.custom_exception.custom_exceptions import UserAlreadyExistsException, InvalidCredentialsException
+from app.custom_exception.custom_exceptions import UserAlreadyExistsException, InvalidCredentialsException, UserNotVerifiedException
 from app.security.password_handler import hash_password
 from app.models.user_model import UserModel
 from app.security.password_handler import verify_password
@@ -70,6 +70,10 @@ class AuthService:
     # 3. Check karo account active hai ya nahi
     if not user["is_active"]:
         raise InvalidCredentialsException()
+
+    # 3.5 . check account verified hai ya nahi
+    if not user["is_verified"]:
+       raise UserNotVerifiedException()
 
     # 4. convert _id into id
     user_id = str(user["_id"])
