@@ -1,0 +1,17 @@
+# built in module imports
+from fastapi import APIRouter, status
+
+
+
+# custom module imports
+from app.schemas.user_schema import UserResponse, UserCreate
+from app.services.auth_service import auth_service
+
+
+# create instance
+router = APIRouter(prefix="/auth", tags=["Authentication"])
+
+# POST: sign up route
+@router.post("/signup" , response_model=UserResponse , status_code=status.HTTP_201_CREATED)
+async def signup(user_data: UserCreate):
+  return await auth_service.signup(user_data)
