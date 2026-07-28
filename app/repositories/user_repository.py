@@ -1,5 +1,6 @@
 # built in module imports
 from typing import Optional
+from bson import ObjectId
 
 
 # custom module imports
@@ -36,8 +37,14 @@ class UserRepository:
     return created_user
 
 
-# ===========================
-  # set refresh token 
+  # save refresh token into repository
+  async def update_refresh_token(self, user_id: str, refresh_token: str)-> None:
+    collection = self._get_collection()
+    await collection.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$set": {"refresh_token": refresh_token}}
+    )
+
 
 
 # ===========================

@@ -4,7 +4,7 @@ from fastapi import APIRouter, status
 
 
 # custom module imports
-from app.schemas.user_schema import UserResponse, UserCreate
+from app.schemas.user_schema import UserResponse, UserCreate, UserLogin
 from app.services.auth_service import auth_service
 
 
@@ -15,3 +15,10 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 @router.post("/signup" , response_model=UserResponse , status_code=status.HTTP_201_CREATED)
 async def signup(user_data: UserCreate):
   return await auth_service.signup(user_data)
+
+
+
+# post: login route
+@router.post("login")
+async def login(user_data: UserLogin):
+  return await auth_service.login(user_data)

@@ -23,3 +23,12 @@ class UserAlreadyExistsException(AppException):
             message=f"User with email '{email}' already exists",
             status_code=status.HTTP_409_CONFLICT,
         )
+
+
+class InvalidCredentialsException(AppException):
+    """ when login fails raise this exception """
+    def __init__(self):
+        super().__init__(
+            message="Invalid email or password",
+            status_code=status.HTTP_401_UNAUTHORIZED,
+        )
