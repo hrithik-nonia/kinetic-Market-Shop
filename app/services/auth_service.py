@@ -10,7 +10,7 @@ from app.security.password_handler import hash_password
 from app.models.user_model import UserModel
 from app.security.password_handler import verify_password
 from app.security.jwt_handler import create_access_token , create_refresh_token
-
+from app.services.otp_service import otp_service
 
 class AuthService:
   # create constructor
@@ -43,7 +43,13 @@ class AuthService:
     # 6 . extract id
     user_id = str(created_user["_id"])
 
-    # 7 . make a structure response for client
+    # 7. send otp and store session id
+    session_id = await otp_service.send_otp(user_data.phone)
+
+    # 8. store session id into data base
+    await self.user_repository.update_otp_session(user_id, session_id)
+
+    #  . make a structure response for client
     return UserResponse(
         id=user_id,
         name=created_user["name"],
@@ -53,6 +59,21 @@ class AuthService:
         is_verified=created_user["is_verified"],
         created_at=created_user["created_at"],
         )
+
+
+
+  # verify otp method
+  async def verify_signup_otp(self, user_id: str, otp: str) -> dict:
+    user = await self.user_repository.find_by_id(user_id)
+    if not user or not user.get("otp_session_id"):
+        raise ValueError("No OTP session found, please signup again")
+
+    is_verified = await otp_service.verify_otp(user["otp_session_id"], otp)
+    if not is_verified:
+        raise ValueError("Invalid or expired OTP")
+
+    await self.user_repository.mark_verified(user_id)
+    return {"message": "Phone verified successfully"}
 
 
 
