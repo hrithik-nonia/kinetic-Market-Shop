@@ -46,6 +46,29 @@ class UserRepository:
     )
 
 
+  # save otp session id into DB
+  async def update_otp_session(self, user_id: str, session_id: str) -> None:
+    collection = self._get_collection()
+    await collection.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$set": {"otp_session_id": session_id}}
+    )
+
+
+  # find user by id (for verify-otp endpoint)
+  async def find_by_id(self, user_id: str) -> Optional[dict]:
+    collection = self._get_collection()
+    return await collection.find_one({"_id": ObjectId(user_id)})
+
+
+  # mark user as verified after successful otp verification
+  async def mark_verified(self, user_id: str) -> None:
+    collection = self._get_collection()
+    await collection.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$set": {"is_verified": True, "otp_session_id": None}}
+    )
+
 
 # ===========================
 

@@ -26,8 +26,7 @@ class UserModel(BaseModel):
   updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
   is_verified: bool = False
-  verification_otp: Optional[str] = None
-  otp_expires_at: Optional[datetime] = None
+  otp_session_id: Optional[str] = None
 
   model_config = {
       "populate_by_name": True,
